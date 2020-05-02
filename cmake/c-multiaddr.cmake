@@ -1,13 +1,13 @@
 find_path(MULTIADDR_ROOT_DIR
-        NAMES multiaddr/multiaddr.h
-        PATHS c-multiaddr/include
+        NAMES include/multiaddr/multiaddr.h
+        PATHS c-multiaddr
         NO_DEFAULT_PATH
         )
 message("MULTIADDR_ROOT_DIR = ${MULTIADDR_ROOT_DIR}")
 
 find_path(MULTIADDR_DIR
-        NAMES multiaddr/multiaddr.h
-        PATHS c-multiaddr/include
+        NAMES include/multiaddr/multiaddr.h
+        PATHS c-multiaddr
         NO_DEFAULT_PATH
         )
 message("MULTIADDR_DIR = ${MULTIADDR_DIR}")

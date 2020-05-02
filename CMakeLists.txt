@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.15)
 project(libp2p C CXX)
 enable_language(C ASM)
 
@@ -6,10 +6,10 @@ enable_language(C ASM)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
-set(CMAKE_C_FLAGS "-O0 -g -Wall -Wmissing-prototypes -Wno-unused-result -Wno-unused-function -Wno-unused-variable")
+set(CMAKE_C_FLAGS "-std=gnu11 -O0 -g -Wall -Wmissing-prototypes -Wno-unused-result -Wno-unused-function -Wno-unused-variable")
 #set gnu compiler c flags
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-        set(CMAKE_C_FLAGS "-O0 -g -Wall -Wmissing-prototypes -Wno-unused-result -Wno-unused-function -Wno-unused-variable -Wno-unused-but-set-variable")
+        set(CMAKE_C_FLAGS "-std=gnu11 -O0 -g -Wall -Wmissing-prototypes -Wno-unused-result -Wno-unused-function -Wno-unused-variable -Wno-unused-but-set-variable")
 endif()
 
 OPTION(DEBUG "Build the project using debugging code" OFF)
@@ -26,31 +26,31 @@ endif(DEBUG)
 #[1]end
 
 #[2]download and compile external project start
-include(cmake/multiaddr.cmake)
-include(cmake/multihash.cmake)
-include(cmake/protobuf.cmake)
+include(cmake/c-multiaddr.cmake)
+include(cmake/c-multihash.cmake)
+include(cmake/c-protobuf.cmake)
 #[2]end
 
 #[3]download and compile projects in hunter
-find_package(MULTIADDR QUIET)
-#if(MULTIADDR_FOUND)
-#        message("-- Found multiaddr: include ${MULTIADDR_INCLUDE_DIR}  libraries ${MULTIADDR_LIBRARY}")
-#else()
-#        message(FATAL_ERROR "Failed to find MULTIADDR dependency!")
-#endif()
-
-find_package(MUTIHASH QUIET)
-#if(MUTIHASH_FOUND)
-#        message("-- Found multihash: include ${MUTIHASH_INCLUDE_DIR}  libraries ${MUTIHASH_LIBRARY}")
-#else()
-#        message(FATAL_ERROR "Failed to find MUTIHASH dependency!")
-#endif()
-
-find_package(PROTOBUF QUIET)
-if(PROTOBUF_FOUND)
-        message("-- Found protobuf: include ${PROTOBUF_INCLUDE_DIR}  libraries ${PROTOBUF_LIBRARY}")
+find_package(c-multiaddr CONFIG)
+if(MULTIADDR_FOUND)
+        message("-- Found c-multiaddr: include ${MULTIADDR_INCLUDE_DIR}  libraries ${MULTIADDR_LIBRARY}")
 else()
-        message(FATAL_ERROR "Failed to find PROTOBUF dependency!")
+        message(FATAL_ERROR "Failed to find c-multiaddr dependency!")
+endif()
+
+find_package(c-multihash CONFIG)
+if(MULTIHASH_FOUND)
+        message("-- Found c-multihash: include ${MUTIHASH_INCLUDE_DIR}  libraries ${MULTIHASH_FOUND}")
+else()
+        message(FATAL_ERROR "Failed to find c-multihash dependency!")
+endif()
+
+find_package(c-protobuf CONFIG)
+if(PROTOBUF_FOUND)
+        message("-- Found c-protobuf: include ${PROTOBUF_INCLUDE_DIR}  libraries ${PROTOBUF_LIBRARY}")
+else()
+        message(FATAL_ERROR "Failed to find c-protobuf dependency!")
 endif()
 #[3]end
 
@@ -63,28 +63,16 @@ endif()
 
 #[5]include directories of external libraries
 include_directories(${MULTIADDR_INCLUDE_DIR})
-include_directories(${MUTIHASH_INCLUDE_DIR})
+include_directories(${MULTIHASH_INCLUDE_DIR})
 include_directories(${PROTOBUF_INCLUDE_DIR})
+
+include_directories("${PROJECT_SOURCE_DIR}/include")
 #[5]end
 
 #[6]add source file start
 file(GLOB_RECURSE LIBP2P_HEADERS
-        include/libp2p/conn/*.h
-        include/libp2p/crypto/*.h
-        include/libp2p/db/*.h
-        include/libp2p/hashmap/*.h
-        include/libp2p/identify/*.h
-        include/libp2p/net/*.h
-        include/libp2p/nodeio/*.h
-        include/libp2p/os/*.h
-        include/libp2p/peer/*.h
-        include/libp2p/record/*.h
-        include/libp2p/routing/*.h
-        include/libp2p/secio/*.h
-        include/libp2p/swarm/*.h
-        include/libp2p/utils/*.h
-        include/libp2p/yamux/*.h
-        )
+        include/
+)
 
 file(GLOB_RECURSE LIBP2P_SOURCES
         conn/*.c
@@ -103,33 +91,33 @@ file(GLOB_RECURSE LIBP2P_SOURCES
         thirdparty/mbedtls/*.c
         utils/*.c
         yamux/*.c
+        c-multiaddr/*.c
+        c-multihash/src/*.c
+        c-protobuf/*.c
         )
-#[6]end
-
 #[7]ignore sources that we do not intend to include when building the executable...
-list(FILTER LIBP2P_SOURCES EXCLUDE REGEX ".*.txt$")
+list(FILTER LIBP2P_SOURCES EXCLUDE REGEX ".main.c$")
+list(FILTER LIBP2P_SOURCES EXCLUDE REGEX ".test.c$")
+list(FILTER LIBP2P_SOURCES EXCLUDE REGEX ".testing.c$")
+list(FILTER LIBP2P_SOURCES EXCLUDE REGEX ".testit.c$")
 #[7]end
 
 #[8]compile executable object start
-add_library(libp2p SHARED ${LIBP2P_SOURCES})
+add_executable(c-libp2p-test main.c ${LIBP2P_SOURCES})
+add_library(p2p_static STATIC ${LIBP2P_SOURCES})
+add_library(p2p SHARED ${LIBP2P_SOURCES})
+
+set_target_properties(p2p_static PROPERTIES OUTPUT_NAME "p2p")
+set_target_properties(p2p PROPERTIES CLEAN_DIRECT_OUTPUT 1)
+set_target_properties(p2p_static PROPERTIES CLEAN_DIRECT_OUTPUT 1)
 #[8]end
 
 #[9]link libraries start
-target_include_directories(
-        ${PROJECT_NAME}
-        PUBLIC
-        ${MULTIADDR_INCLUDE_DIR}
-        ${MUTIHASH_INCLUDE_DIR}
-        ${PROTOBUF_INCLUDE_DIR}
-)
 target_link_libraries(
-        ${PROJECT_NAME}
-        PUBLIC
+        c-libp2p-test
         ${CMAKE_THREAD_LIBS_INIT}
         ${MULTIADDR_LIBRARY}
-        ${MUTIHASH_LIBRARY}
+        ${MULTIHASH_LIBRARY}
         ${PROTOBUF_LIBRARY}
-        m
-        dl
 )
 #[9]end
