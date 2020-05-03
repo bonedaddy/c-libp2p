@@ -3,6 +3,12 @@ Implementation of libp2p in C.
 
 ## build
 
+* prepare installed
+
+|     name    |  version  | 
+| ----------- |-----------| 
+| camke       |  3.15     | 
+
 * clone from github
 
 ```
@@ -27,6 +33,6 @@ or
 * run demo
 
 ```
-> ./c-libp2p-test
-> 
+> ./libp2p-demo
+> libp2p node start listening ip:127.0.0.1, port:1234
 ```
