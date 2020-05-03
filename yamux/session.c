@@ -17,10 +17,6 @@
 
 static struct yamux_config dcfg = YAMUX_DEFAULT_CONFIG;
 
-// forward declarations
-struct YamuxContext* libp2p_yamux_get_context(void* stream_context);
-struct yamux_stream* yamux_stream_new();
-
 
 /***
  * Create a new yamux session
@@ -159,7 +155,7 @@ ssize_t yamux_session_ping(struct yamux_session* session, uint32_t value, int po
  * @param return_message where to put the results
  * @returns true(1) on success, false(0) otherwise
  */
-int yamux_pull_message_from_frame(const uint8_t* incoming, size_t incoming_size, struct StreamMessage** return_message) {
+static int yamux_pull_message_from_frame(const uint8_t* incoming, size_t incoming_size, struct StreamMessage** return_message) {
 	if (incoming_size <= 12) {
 		return 0;
 	}

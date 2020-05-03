@@ -13,7 +13,7 @@
  * Create a record with default settings
  * @returns the newly allocated record struct
  */
-struct Libp2pRecord* libp2p_record_new() {
+struct Libp2pRecord* libp2p_record_new(void) {
 	struct Libp2pRecord* out = (struct Libp2pRecord*)malloc(sizeof(struct Libp2pRecord));
 	if (out != NULL) {
 		out->author = NULL;

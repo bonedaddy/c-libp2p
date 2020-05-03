@@ -16,4 +16,4 @@ int libp2p_net_server_start(const char* ip, int port, struct Libp2pVector* proto
  * Shut down the server started by libp2p_net_start_server
  * @returns true(1) on success, false(0) otherwise
  */
-int libp2p_net_server_stop();
+int libp2p_net_server_stop(void);

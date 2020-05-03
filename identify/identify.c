@@ -97,7 +97,7 @@ int libp2p_identify_receive_protocol(struct Stream* stream) {
  * Create a Identify struct
  * @returns the newly allocated record struct
  */
-Identify* libp2p_identify_new() {
+Identify* libp2p_identify_new(void) {
         Identify* out = (Identify*)malloc(sizeof(Identify));
         if (out != NULL) {
                 out->PublicKey = NULL;
@@ -384,7 +384,7 @@ struct Libp2pProtocolHandler* libp2p_identify_build_protocol_handler(char* publi
 	return handler;
 }
 
-int libp2p_identify_close(struct Stream* stream) {
+static int libp2p_identify_close(struct Stream* stream) {
 	if (stream == NULL)
 		return 0;
 	if (stream->parent_stream != NULL)
@@ -395,7 +395,7 @@ int libp2p_identify_close(struct Stream* stream) {
 	return 1;
 }
 
-int libp2p_identify_read(void* stream_context, struct StreamMessage** msg, int timeout_secs) {
+static int libp2p_identify_read(void* stream_context, struct StreamMessage** msg, int timeout_secs) {
 	struct IdentifyContext* ctx = (struct IdentifyContext*) stream_context;
 	struct StreamMessage* internal = NULL;
 	if (ctx->parent_stream->read(ctx->parent_stream->stream_context, &internal, timeout_secs)) {

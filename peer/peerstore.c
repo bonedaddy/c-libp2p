@@ -8,7 +8,7 @@
  * Creates a new PeerEntry struct
  * @returns the newly allocated struct or NULL
  */
-struct PeerEntry* libp2p_peer_entry_new() {
+struct PeerEntry* libp2p_peer_entry_new(void) {
 	struct PeerEntry* out = (struct PeerEntry*)malloc(sizeof(struct PeerEntry));
 	if (out != NULL) {
 		out->peer = NULL;
@@ -32,7 +32,7 @@ void libp2p_peer_entry_free(struct PeerEntry* in) {
  * @param in the PeerEntry to copy
  * @returns a newly allocated PeerEntry with the values from "in"
  */
-struct PeerEntry* libp2p_peer_entry_copy(struct PeerEntry* in) {
+static struct PeerEntry* libp2p_peer_entry_copy(struct PeerEntry* in) {
 	struct PeerEntry* out = libp2p_peer_entry_new();
 	if (out != NULL) {
 		out->peer = libp2p_peer_copy(in->peer);
@@ -109,7 +109,7 @@ int libp2p_peerstore_add_peer_entry(struct Peerstore* peerstore, struct PeerEntr
 	return 1;
 }
 
-int libp2p_peerstore_update_addresses(struct Libp2pPeer* existing, const struct Libp2pPeer* incoming) {
+static int libp2p_peerstore_update_addresses(struct Libp2pPeer* existing, const struct Libp2pPeer* incoming) {
 	struct Libp2pLinkedList* incoming_list_pos = incoming->addr_head;
 	while (incoming_list_pos != NULL) {
 		if (incoming_list_pos->item == NULL) {

@@ -2,7 +2,7 @@
 
 #include "libp2p/utils/linked_list.h"
 
-struct Libp2pLinkedList* libp2p_utils_linked_list_new() {
+struct Libp2pLinkedList* libp2p_utils_linked_list_new(void) {
 	struct Libp2pLinkedList* out = (struct Libp2pLinkedList*)malloc(sizeof(struct Libp2pLinkedList));
 	if (out != NULL) {
 		out->item = NULL;

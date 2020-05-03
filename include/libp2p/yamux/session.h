@@ -153,3 +153,7 @@ int yamux_decode(void* context, const uint8_t* incoming, size_t incoming_size, s
  * @returns the correce yamux_session_stream
  */
 struct yamux_session_stream* yamux_get_session_stream(struct yamux_session* session, int channel);
+
+// forward declarations
+struct YamuxContext* libp2p_yamux_get_context(void* stream_context);
+struct yamux_stream* yamux_stream_new(void);

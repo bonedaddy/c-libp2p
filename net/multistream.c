@@ -30,7 +30,7 @@ int libp2p_net_multistream_handle_message(const struct StreamMessage* msg, struc
 int libp2p_net_multistream_bytes_waiting(struct Stream* stream);
 
 
-int libp2p_net_multistream_can_handle(const struct StreamMessage* msg) {
+static int libp2p_net_multistream_can_handle(const struct StreamMessage* msg) {
 	if (msg == NULL || msg->data == NULL || msg->data_size == 0)
 		return 0;
 	char *protocol = "/multistream/1.0.0\n";
@@ -87,7 +87,7 @@ int libp2p_net_multistream_receive_protocol(struct SessionContext* context) {
 	return 1;
 }
 
-int libp2p_net_multistream_shutdown(void* protocol_context) {
+static int libp2p_net_multistream_shutdown(void* protocol_context) {
 	struct MultistreamContext* context = (struct MultistreamContext*) protocol_context;
 	if (context != NULL) {
 		free(context);
@@ -100,7 +100,7 @@ int libp2p_net_multistream_shutdown(void* protocol_context) {
  * @param ctx the context
  * @returns true(1) on success, otherwise false(0)
  */
-int libp2p_net_multistream_context_free(struct MultistreamContext* ctx) {
+static int libp2p_net_multistream_context_free(struct MultistreamContext* ctx) {
 	struct Stream* parent_stream = ctx->stream->parent_stream;
 	int retVal = parent_stream->close(parent_stream);
 	// regardless of retVal, free the context
@@ -115,7 +115,7 @@ int libp2p_net_multistream_context_free(struct MultistreamContext* ctx) {
  * @param stream_context a SessionContext
  * @returns true(1) on success, otherwise false(0)
  */
-int libp2p_net_multistream_close(struct Stream* stream) {
+static int libp2p_net_multistream_close(struct Stream* stream) {
 	if (stream->stream_context == NULL) {
 		return 0;
 	}
@@ -128,7 +128,7 @@ int libp2p_net_multistream_close(struct Stream* stream) {
  * @param stream_context a MultistreamContext
  * @returns number of bytes to be read, or -1 if there was an error
  */
-int libp2p_net_multistream_peek(void* stream_context) {
+static int libp2p_net_multistream_peek(void* stream_context) {
 	if (stream_context == NULL)
 		return -1;
 
@@ -171,7 +171,7 @@ struct StreamMessage* libp2p_net_multistream_prepare_to_send(struct StreamMessag
  * @param msg the data to send
  * @returns the number of bytes written
  */
-int libp2p_net_multistream_write_without_check(void* stream_context, struct StreamMessage* incoming) {
+static int libp2p_net_multistream_write_without_check(void* stream_context, struct StreamMessage* incoming) {
 	struct MultistreamContext* multistream_context = (struct MultistreamContext*) stream_context;
 	struct Stream* parent_stream = multistream_context->stream->parent_stream;
 	int num_bytes = 0;
@@ -190,7 +190,7 @@ int libp2p_net_multistream_write_without_check(void* stream_context, struct Stre
 	return num_bytes;
 }
 
-int multistream_wait(struct Stream* stream, int timeout_secs) {
+static int multistream_wait(struct Stream* stream, int timeout_secs) {
 	int counter = 0;
 	struct MultistreamContext* ctx = (struct MultistreamContext*)stream->stream_context;
 	while (ctx->status != multistream_status_ack && counter <= timeout_secs) {
@@ -416,7 +416,7 @@ void libp2p_net_multistream_stream_free(struct Stream* stream) {
 	}
 }
 
-int libp2p_net_multistream_read_raw(void* stream_context, uint8_t* buffer, int buffer_len, int timeout_secs) {
+static int libp2p_net_multistream_read_raw(void* stream_context, uint8_t* buffer, int buffer_len, int timeout_secs) {
 	if (stream_context == NULL)
 		return 0;
 	struct MultistreamContext* ctx = (struct MultistreamContext*) stream_context;
@@ -426,7 +426,7 @@ int libp2p_net_multistream_read_raw(void* stream_context, uint8_t* buffer, int b
 /**
  * We want to try and negotiate Multistream on the incoming stream
  */
-struct Stream* libp2p_net_multistream_handshake(struct Stream* stream) {
+static struct Stream* libp2p_net_multistream_handshake(struct Stream* stream) {
 	//TODO: implement this method
 	return NULL;
 }
@@ -437,7 +437,7 @@ struct Stream* libp2p_net_multistream_handshake(struct Stream* stream) {
  * @param new_stream the protocol above
  * @returns true(1) on success, false(0) otherwise
  */
-int libp2p_net_multistream_handle_upgrade(struct Stream* multistream, struct Stream* new_stream) {
+static int libp2p_net_multistream_handle_upgrade(struct Stream* multistream, struct Stream* new_stream) {
 	// take multistream out of the picture
 	if (multistream->stream_type != STREAM_TYPE_MULTISTREAM) {
 		libp2p_logger_error("multistream", "Attempt to upgrade from multistream to %d, but the first parameter is not multistream, it is %d.\n", new_stream->stream_type, multistream->stream_type);

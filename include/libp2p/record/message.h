@@ -31,7 +31,7 @@ struct KademliaMessage {
  * create a new Libp2pMessage struct
  * @returns a new Libp2pMessage with default settings
  */
-struct KademliaMessage* libp2p_message_new();
+struct KademliaMessage* libp2p_message_new(void);
 
 /**
  * Deallocate memory from a Message struct

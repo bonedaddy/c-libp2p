@@ -230,7 +230,7 @@ ssize_t socket_write(int s, const char *buf, size_t len, int flags)
    return send(s, buf, len, flags);
 }
 
-int socket_open4() {
+int socket_open4(void) {
 	int sockfd = socket(AF_INET, SOCK_STREAM, 0);
 
 	return sockfd;

@@ -1,4 +1,5 @@
 #include "mbedtls/sha256.h"
+#include "libp2p/crypto/sha256.h"
 
 /***
  * hash a string using SHA256

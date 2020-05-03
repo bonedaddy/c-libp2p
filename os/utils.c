@@ -42,7 +42,7 @@ int os_utils_setenv(const char* variable, const char* value, int overwrite) {
  * returns the user's home directory
  * @returns the home directory
  */
-char* os_utils_get_homedir() {
+char* os_utils_get_homedir(void) {
 #ifndef __MINGW32__
 	struct passwd *pw = getpwuid(getuid());
 	return pw->pw_dir;
@@ -187,7 +187,7 @@ int os_utils_file_size(const char* path) {
  * Get the current time in GMT (UTC) as seconds since epoch
  * @returns seconds since epoch
  */
-unsigned long long os_utils_gmtime() {
+unsigned long long os_utils_gmtime(void) {
 	time_t local = time(NULL);
 	struct tm *gmt = gmtime(&local);
 	return (unsigned long long)mktime(gmt);

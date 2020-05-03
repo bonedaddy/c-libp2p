@@ -108,7 +108,7 @@ FOUND:;
  * @param f the frame
  * @returns number of bytes sent, 0 on error
  */
-int yamux_write_frame(void* context, struct yamux_frame* f) {
+static int yamux_write_frame(void* context, struct yamux_frame* f) {
 	if (context == NULL)
 		return 0;
 	encode_frame(f);
@@ -361,7 +361,7 @@ void yamux_stream_free(struct yamux_stream* stream)
     free(stream);
 }
 
-struct yamux_stream* yamux_stream_new() {
+struct yamux_stream* yamux_stream_new(void) {
 	struct yamux_stream* out = (struct yamux_stream*) malloc(sizeof(struct yamux_stream));
 	if (out != NULL) {
 		memset(out, 0, sizeof(struct yamux_stream));
@@ -374,7 +374,7 @@ struct yamux_stream* yamux_stream_new() {
  * @param args a YamuxChannelContext
  * @returns NULL;
  */
-void* yamux_read_method(void* args) {
+static void* yamux_read_method(void* args) {
 	struct YamuxChannelContext* context = (struct YamuxChannelContext*) args;
 	context->read_running = 1;
 	struct StreamMessage* message = NULL;
@@ -408,7 +408,7 @@ void* yamux_read_method(void* args) {
  * spin off a new thread to handle a child's reading of data
  * @param context the YamuxChannelContext
  */
-int libp2p_yamux_notify_child_stream_has_data(struct YamuxChannelContext* context) {
+static int libp2p_yamux_notify_child_stream_has_data(struct YamuxChannelContext* context) {
 	if (!context->read_running) {
 		pthread_t new_thread;
 

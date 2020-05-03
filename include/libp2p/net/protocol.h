@@ -40,7 +40,7 @@ struct Libp2pProtocolHandler {
  * Allocate resources for a new Libp2pProtocolHandler
  * @returns an allocated struct
  */
-struct Libp2pProtocolHandler* libp2p_protocol_handler_new();
+struct Libp2pProtocolHandler* libp2p_protocol_handler_new(void);
 
 /***
  * Release resources of a protocol handler

@@ -15,7 +15,7 @@
  * @param test the protocol string to compare it with (i.e. "/secio" or "/nodeio"
  * @returns true(1) if there was a match, false(0) otherwise
  */
-const struct Libp2pProtocolHandler* protocol_compare(struct StreamMessage* msg, struct Libp2pVector* protocol_handlers) {
+static const struct Libp2pProtocolHandler* protocol_compare(struct StreamMessage* msg, struct Libp2pVector* protocol_handlers) {
 	if (protocol_handlers != NULL) {
 		for(int i = 0; i < protocol_handlers->total; i++) {
 			const struct Libp2pProtocolHandler* handler = (const struct Libp2pProtocolHandler*) libp2p_utils_vector_get(protocol_handlers, i);
@@ -44,7 +44,7 @@ const struct Libp2pProtocolHandler* libp2p_protocol_get_handler(struct Libp2pVec
  * Allocate resources for a new Libp2pProtocolHandler
  * @returns an allocated struct
  */
-struct Libp2pProtocolHandler* libp2p_protocol_handler_new() {
+struct Libp2pProtocolHandler* libp2p_protocol_handler_new(void) {
 	struct Libp2pProtocolHandler* h = (struct Libp2pProtocolHandler*) malloc(sizeof(struct Libp2pProtocolHandler));
 	if (h != NULL) {
 		h->CanHandle = NULL;
@@ -64,7 +64,7 @@ void libp2p_protocol_handler_free(struct Libp2pProtocolHandler* handler) {
 		free(handler);
 }
 
-int appears_to_be_a_protocol(struct StreamMessage* msg) {
+static int appears_to_be_a_protocol(struct StreamMessage* msg) {
 	if (msg == NULL)
 		return 0;
 	if (msg->data_size < 2)

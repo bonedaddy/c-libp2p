@@ -19,14 +19,14 @@ void libp2p_logger_add_class(const char* str);
 /**
  * Initialize the logger. This should be done only once.
  */
-void libp2p_logger_init();
+void libp2p_logger_init(void);
 
 /***
  * Checks to see if the logger has been initialized
  */
-int libp2p_logger_initialized();
+int libp2p_logger_initialized(void);
 
-int libp2p_logger_free();
+int libp2p_logger_free(void);
 
 /***
  * Checks to see if we're watching for a particular class

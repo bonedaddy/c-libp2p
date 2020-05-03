@@ -13,6 +13,7 @@
 #include "libp2p/net/p2pnet.h"
 #include "libp2p/utils/logger.h"
 #include "libp2p/conn/session.h"
+#include "libp2p/net/connectionstream.h"
 #include "multiaddr/multiaddr.h"
 
 /**
@@ -180,7 +181,7 @@ int libp2p_net_connection_write(void* stream_context, struct StreamMessage* msg)
 	return socket_write(ctx->socket_descriptor, (char*)msg->data, msg->data_size, 0);
 }
 
-int libp2p_net_handle_upgrade(struct Stream* old_stream, struct Stream* new_stream) {
+static int libp2p_net_handle_upgrade(struct Stream* old_stream, struct Stream* new_stream) {
 	struct ConnectionContext* ctx = (struct ConnectionContext*) old_stream->stream_context;
 	if (ctx->session_context != NULL) {
 		ctx->session_context->default_stream = new_stream;
@@ -236,7 +237,7 @@ struct Stream* libp2p_net_connection_new(int fd, char* ip, int port, struct Sess
 	struct Stream* out = libp2p_net_connection_established(fd, ip, port, session_context);
 	if (out != NULL) {
 		struct ConnectionContext* ctx = (struct ConnectionContext*) out->stream_context;
-		if (!socket_connect4_with_timeout(ctx->socket_descriptor, hostname_to_ip(ip), port, 10) == 0) {
+		if (socket_connect4_with_timeout(ctx->socket_descriptor, hostname_to_ip(ip), port, 10)) {
 			// unable to connect
 			libp2p_stream_free(out);
 			out = NULL;

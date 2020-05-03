@@ -35,7 +35,7 @@ struct IdentifyContext {
 int libp2p_identify_can_handle(const struct StreamMessage* msg);
 int libp2p_identify_send_protocol(struct Stream* stream, Identify* identify, int initiatedByUs);
 int libp2p_identify_receive_protocol(struct Stream* stream);
-Identify* libp2p_identify_new();
+Identify* libp2p_identify_new(void);
 void libp2p_identify_free(Identify* in);
 char *libp2p_identify_new_item(char *item, size_t size);
 int libp2p_identify_array_add_item(char ***array, char *item);

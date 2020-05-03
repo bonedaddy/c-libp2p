@@ -70,10 +70,6 @@ include_directories("${PROJECT_SOURCE_DIR}/include")
 #[5]end
 
 #[6]add source file start
-file(GLOB_RECURSE LIBP2P_HEADERS
-        include/
-)
-
 file(GLOB_RECURSE LIBP2P_SOURCES
         conn/*.c
         crypto/*.c
@@ -91,9 +87,6 @@ file(GLOB_RECURSE LIBP2P_SOURCES
         thirdparty/mbedtls/*.c
         utils/*.c
         yamux/*.c
-        c-multiaddr/*.c
-        c-multihash/src/*.c
-        c-protobuf/*.c
         )
 #[7]ignore sources that we do not intend to include when building the executable...
 list(FILTER LIBP2P_SOURCES EXCLUDE REGEX ".main.c$")
@@ -103,21 +96,37 @@ list(FILTER LIBP2P_SOURCES EXCLUDE REGEX ".testit.c$")
 #[7]end
 
 #[8]compile executable object start
-add_executable(c-libp2p-test main.c ${LIBP2P_SOURCES})
-add_library(p2p_static STATIC ${LIBP2P_SOURCES})
-add_library(p2p SHARED ${LIBP2P_SOURCES})
-
-set_target_properties(p2p_static PROPERTIES OUTPUT_NAME "p2p")
-set_target_properties(p2p PROPERTIES CLEAN_DIRECT_OUTPUT 1)
-set_target_properties(p2p_static PROPERTIES CLEAN_DIRECT_OUTPUT 1)
+add_executable(libp2p-demo main.c ${LIBP2P_SOURCES})
+#add_library(p2p_static STATIC ${LIBP2P_SOURCES})
+#add_library(p2p SHARED ${LIBP2P_SOURCES})
+#
+#set_target_properties(p2p_static PROPERTIES OUTPUT_NAME "p2p")
+#set_target_properties(p2p PROPERTIES CLEAN_DIRECT_OUTPUT 1)
+#set_target_properties(p2p_static PROPERTIES CLEAN_DIRECT_OUTPUT 1)
 #[8]end
 
 #[9]link libraries start
 target_link_libraries(
-        c-libp2p-test
+        libp2p-demo
         ${CMAKE_THREAD_LIBS_INIT}
         ${MULTIADDR_LIBRARY}
         ${MULTIHASH_LIBRARY}
         ${PROTOBUF_LIBRARY}
 )
+
+#target_link_libraries(
+#        p2p_static
+#        ${CMAKE_THREAD_LIBS_INIT}
+#        ${MULTIADDR_LIBRARY}
+#        ${MULTIHASH_LIBRARY}
+#        ${PROTOBUF_LIBRARY}
+#)
+#
+#target_link_libraries(
+#        p2p
+#        ${CMAKE_THREAD_LIBS_INIT}
+#        ${MULTIADDR_LIBRARY}
+#        ${MULTIHASH_LIBRARY}
+#        ${PROTOBUF_LIBRARY}
+#)
 #[9]end

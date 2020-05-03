@@ -51,7 +51,7 @@ int os_utils_setenv(const char* variable, const char* value, int overwrite);
  * get the user's home directory
  * @returns the user's home directory
  */
-char* os_utils_get_homedir();
+char* os_utils_get_homedir(void);
 
 /**
  * join 2 pieces of a filepath, being careful about the slashes
@@ -81,7 +81,7 @@ int os_utils_is_directory(const char* file_name);
  * Get the current time in GMT (UTC) as seconds since epoch
  * @returns seconds since epoch
  */
-unsigned long long os_utils_gmtime();
+unsigned long long os_utils_gmtime(void);
 
 /**
  * String search for platforms without it

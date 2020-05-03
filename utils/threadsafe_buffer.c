@@ -11,7 +11,7 @@
  * Allocate a new context
  * @returns a newly allocated context, or NULL on error (out of memory?)
  */
-struct ThreadsafeBufferContext* threadsafe_buffer_context_new() {
+struct ThreadsafeBufferContext* threadsafe_buffer_context_new(void) {
 	struct ThreadsafeBufferContext* context = (struct ThreadsafeBufferContext*) malloc(sizeof(struct ThreadsafeBufferContext));
 	if (context != NULL) {
 		context->buffer_size = 0;

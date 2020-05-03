@@ -5,7 +5,7 @@
 #include "mh/hashes.h"
 #include "libp2p/crypto/encoding/base58.h"
 #include "libp2p/crypto/sha256.h"
-//#include "libp2p/crypto/key.h"
+#include "libp2p/crypto/peerutils.h"
 
 /**
  * base58 encode a string NOTE: this also puts the prefix 'Qm' in front as the ID is a multihash

@@ -3,6 +3,6 @@ struct StringList {
 	struct StringList* next;
 };
 
-struct StringList* libp2p_utils_string_list_new();
+struct StringList* libp2p_utils_string_list_new(void);
 
 void libp2p_utils_string_list_free(struct StringList* in);

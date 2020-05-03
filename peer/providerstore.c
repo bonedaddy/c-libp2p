@@ -25,7 +25,7 @@ struct ProviderStore* libp2p_providerstore_new(const struct Datastore* datastore
 	return out;
 }
 
-void libp2p_providerstore_entry_free(struct ProviderEntry* in) {
+static void libp2p_providerstore_entry_free(struct ProviderEntry* in) {
 	if (in != NULL) {
 		if (in->hash != NULL) {
 			free(in->hash);

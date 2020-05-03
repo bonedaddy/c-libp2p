@@ -10,7 +10,7 @@
  * @param binary_data_size the size of the results buffer
  * @returns true(1) on success
  */
-int libp2p_crypto_encoding_base58_decode(const unsigned char* base58, size_t base58_size, unsigned char** binary_data, size_t *binary_data_size);
+int libp2p_crypto_encoding_base58_decode(const char* b58, size_t base58_size, unsigned char** bin, size_t* binszp);
 
 /**
  * encode an array of bytes into a base58 string

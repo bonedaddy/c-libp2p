@@ -5,7 +5,7 @@
 #include "libp2p/conn/session.h"
 #include "libp2p/net/stream.h"
 
-struct SessionContext* libp2p_session_context_new() {
+struct SessionContext* libp2p_session_context_new(void) {
 	struct SessionContext* context = (struct SessionContext*) malloc(sizeof(struct SessionContext));
 	if (context != NULL) {
 		context->aes_decode_nonce_offset = 0;
@@ -132,7 +132,7 @@ int libp2p_stream_unlock(struct Stream* stream) {
  * Create a new StreamMessage struct
  * @returns a StreamMessage struct
  */
-struct StreamMessage* libp2p_stream_message_new() {
+struct StreamMessage* libp2p_stream_message_new(void) {
 	struct StreamMessage* out = (struct StreamMessage*) malloc(sizeof(struct StreamMessage));
 	if (out != NULL) {
 		out->data = NULL;

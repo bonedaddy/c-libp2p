@@ -32,7 +32,7 @@ void libp2p_crypto_ephemeral_stretched_key_free(struct StretchedKey* key) {
 	}
 }
 
-struct EphemeralPrivateKey* libp2p_crypto_ephemeral_key_new() {
+static struct EphemeralPrivateKey* libp2p_crypto_ephemeral_key_new(void) {
 	struct EphemeralPrivateKey* results = (struct EphemeralPrivateKey*)malloc(sizeof(struct EphemeralPrivateKey));
 	if (results != NULL) {
 		results->num_bits = 0;
@@ -68,7 +68,7 @@ void libp2p_crypto_ephemeral_key_free(struct EphemeralPrivateKey* in) {
 	}
 }
 
-void serialize_uint64(const uint64_t in, unsigned char out[8]) {
+static void serialize_uint64(const uint64_t in, unsigned char out[8]) {
 	out[0] = in >> 56;
 	out[1] = in >> 48;
 	out[2] = in >> 40;
@@ -79,7 +79,7 @@ void serialize_uint64(const uint64_t in, unsigned char out[8]) {
 	out[7] = in;
 }
 
-uint64_t unserialize_uint64(unsigned char in[8]) {
+static uint64_t unserialize_uint64(unsigned char in[8]) {
 	uint64_t out = 0;
 
 	out = (out << 8) | in[0];
@@ -102,7 +102,7 @@ uint64_t unserialize_uint64(unsigned char in[8]) {
  * @param bytes_written how many bytes were written to results
  * @returns true(1) on success, otherwise false(0)
  */
-int libp2p_crypto_ephemeral_point_marshal(int bit_size, uint64_t x, uint64_t y, unsigned char** results, size_t* bytes_written) {
+static int libp2p_crypto_ephemeral_point_marshal(int bit_size, uint64_t x, uint64_t y, unsigned char** results, size_t* bytes_written) {
 	int byteLen = (bit_size + 7) >> 3;
 
 	// bytelen is 32, and we never fill in from 1 to 33. hmmm....
@@ -121,7 +121,7 @@ int libp2p_crypto_ephemeral_point_marshal(int bit_size, uint64_t x, uint64_t y, 
 	return 1;
 }
 
-int libp2p_crypto_ephemeral_point_unmarshal(int bit_size, unsigned char* buffer, size_t buffer_length, uint64_t* x, uint64_t* y) {
+static int libp2p_crypto_ephemeral_point_unmarshal(int bit_size, unsigned char* buffer, size_t buffer_length, uint64_t* x, uint64_t* y) {
 	int byteLen = (bit_size + 7) >> 3;
 
 	if (buffer_length != 2 * byteLen + 1)
@@ -198,7 +198,7 @@ int libp2p_crypto_ephemeral_keypair_generate(char* curve, struct EphemeralPrivat
  * @param bytes_written the number of bytes written
  * @returns true(1) on success, otherwise false(0)
  */
-int libp2p_crypto_ephemeral_keypair_to_public_bytes(struct EphemeralPublicKey* public_key, unsigned char** results, size_t* bytes_written) {
+static int libp2p_crypto_ephemeral_keypair_to_public_bytes(struct EphemeralPublicKey* public_key, unsigned char** results, size_t* bytes_written) {
 	return libp2p_crypto_ephemeral_point_marshal(public_key->num_bits, public_key->x, public_key->y, results, bytes_written);
 }
 

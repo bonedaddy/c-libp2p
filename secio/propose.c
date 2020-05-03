@@ -8,7 +8,7 @@
 //                                                        rand                   pubkey                    exchanges                   ciphers                   hashes
 enum WireType secio_propose_message_fields[] = { WIRETYPE_LENGTH_DELIMITED, WIRETYPE_LENGTH_DELIMITED, WIRETYPE_LENGTH_DELIMITED, WIRETYPE_LENGTH_DELIMITED, WIRETYPE_LENGTH_DELIMITED };
 
-struct Propose* libp2p_secio_propose_new() {
+struct Propose* libp2p_secio_propose_new(void) {
 	struct Propose* retVal = (struct Propose*)malloc(sizeof(struct Propose));
 	if (retVal == NULL)
 		return NULL;

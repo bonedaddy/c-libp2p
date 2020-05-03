@@ -68,7 +68,13 @@ struct SessionContext {
  * Allocate resources for a new SessionContext struct
  * @returns the newly allocated SessionContext, or NULL
  */
-struct SessionContext* libp2p_session_context_new();
+struct SessionContext* libp2p_session_context_new(void);
+
+int libp2p_session_context_compare_streams(const struct Stream* a, const struct Stream* b);
+
+int libp2p_session_context_compare_remote_key(const struct PublicKey* a, const struct PublicKey* b);
+
+
 /**
  * Free resources of a SessionContext struct
  * @param context the SessionContext

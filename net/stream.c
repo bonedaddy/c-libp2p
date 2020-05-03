@@ -5,11 +5,11 @@
 #include "libp2p/net/connectionstream.h"
 #include "libp2p/yamux/yamux.h"
 
-int libp2p_stream_default_handle_upgrade(struct Stream* parent_stream, struct Stream* new_stream) {
+static int libp2p_stream_default_handle_upgrade(struct Stream* parent_stream, struct Stream* new_stream) {
 	return libp2p_net_connection_upgrade(parent_stream, new_stream);
 }
 
-struct Stream* libp2p_stream_new() {
+struct Stream* libp2p_stream_new(void) {
 	struct Stream* stream = (struct Stream*) malloc(sizeof(struct Stream));
 	if (stream != NULL) {
 		stream->address = NULL;

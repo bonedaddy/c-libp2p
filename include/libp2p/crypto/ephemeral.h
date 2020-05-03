@@ -59,5 +59,5 @@ void libp2p_crypto_ephemeral_key_free( struct EphemeralPrivateKey* in);
 /**
  * Routines to help with the StretchedKey struct
  */
-struct StretchedKey* libp2p_crypto_ephemeral_stretched_key_new();
+struct StretchedKey* libp2p_crypto_ephemeral_stretched_key_new(void);
 void libp2p_crypto_ephemeral_stretched_key_free(struct StretchedKey* in);

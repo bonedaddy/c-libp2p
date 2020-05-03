@@ -17,7 +17,7 @@ struct StreamMessage {
  * Create a new StreamMessage struct
  * @returns a StreamMessage struct
  */
-struct StreamMessage* libp2p_stream_message_new();
+struct StreamMessage* libp2p_stream_message_new(void);
 
 /**
  * free resources of a StreamMessage struct
@@ -139,7 +139,7 @@ struct Stream {
 	int (*bytes_waiting)(struct Stream* stream);
 };
 
-struct Stream* libp2p_stream_new();
+struct Stream* libp2p_stream_new(void);
 
 void libp2p_stream_free(struct Stream* stream);
 

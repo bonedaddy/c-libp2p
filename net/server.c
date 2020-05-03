@@ -23,6 +23,7 @@
 #include "libp2p/secio/secio.h"
 #include "libp2p/utils/logger.h"
 #include "libp2p/utils/thread_pool.h"
+#include "libp2p/net/server.h"
 
 struct server_connection_params {
 	uint32_t ip_address_binary;
@@ -54,7 +55,7 @@ static int server_shutting_down = 0;
  *
  * @param ptr a pointer to a null_connection_params struct
  */
-void libp2p_net_connection (void *ptr) {
+static void libp2p_net_connection (void *ptr) {
     struct client_connection_params *connection_param = (struct client_connection_params*) ptr;
     int retVal = 0;
 
@@ -99,7 +100,7 @@ void libp2p_net_connection (void *ptr) {
  * @param ptr a pointer to an IpfsNodeListenParams struct
  * @returns nothing useful.
  */
-void* libp2p_server_listen (void *ptr)
+static void* libp2p_server_listen (void *ptr)
 {
 	server_shutting_down = 0;
     int socketfd, s, count = 0;
@@ -184,7 +185,7 @@ int libp2p_net_server_start(const char* ip, int port, struct Libp2pVector* proto
  * Shut down the server started by libp2p_net_start_server
  * @returns true(1) on success, false(0) otherwise
  */
-int libp2p_net_server_stop() {
+int libp2p_net_server_stop(void) {
 	server_shutting_down = 1;
 	pthread_join(server_pthread, NULL);
 	return 1;

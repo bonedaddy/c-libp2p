@@ -16,7 +16,7 @@
  * Allocate memory for a message
  * @returns a new, allocated Libp2pMessage struct
  */
-struct KademliaMessage* libp2p_message_new() {
+struct KademliaMessage* libp2p_message_new(void) {
 	struct KademliaMessage* out = (struct KademliaMessage*)malloc(sizeof(struct KademliaMessage));
 	if (out != NULL) {
 		out->closer_peer_head = NULL;

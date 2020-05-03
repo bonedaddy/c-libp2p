@@ -67,7 +67,7 @@ int libp2p_datastore_free(struct Datastore* datastore);
  * Create a new DatastoreRecord struct
  * @returns a newly allocated DatastoreRecord struct
  */
-struct DatastoreRecord* libp2p_datastore_record_new();
+struct DatastoreRecord* libp2p_datastore_record_new(void);
 
 /***
  * Free resources of a DatastoreRecord

@@ -2,7 +2,7 @@
 
 #include "libp2p/utils/string_list.h"
 
-struct StringList* libp2p_utils_string_list_new() {
+struct StringList* libp2p_utils_string_list_new(void) {
 	struct StringList* list = (struct StringList*)malloc(sizeof(struct StringList));
 	if (list != NULL)
 	{

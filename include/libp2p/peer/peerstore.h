@@ -28,7 +28,7 @@ struct Peerstore {
 	struct Libp2pLinkedList* last_entry;
 };
 
-struct PeerEntry* libp2p_peer_entry_new();
+struct PeerEntry* libp2p_peer_entry_new(void);
 void libp2p_peer_entry_free(struct PeerEntry* in);
 
 /**

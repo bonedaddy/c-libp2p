@@ -10,7 +10,7 @@ struct Exchange {
 	size_t signature_size;
 };
 
-struct Exchange* libp2p_secio_exchange_new();
+struct Exchange* libp2p_secio_exchange_new(void);
 void libp2p_secio_exchange_free(struct Exchange* in);
 
 /**
@@ -48,3 +48,8 @@ int libp2p_secio_exchange_protobuf_decode(unsigned char* buffer, size_t max_buff
  * @returns an Exchange object or NULL
  */
 struct Exchange* libp2p_secio_exchange_build(struct SessionContext* local_session, struct RsaPrivateKey* private_key, const char* bytes_to_be_signed, size_t bytes_size);
+
+/***
+ * Forward declaration
+ */
+int libp2p_secio_sign(struct PrivateKey* priv, const char* bytes_to_send, size_t bytes_size, uint8_t** signature, size_t* signature_size);

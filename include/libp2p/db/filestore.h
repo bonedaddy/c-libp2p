@@ -39,7 +39,7 @@ int libp2p_filestore_init(struct Filestore* filestore, const char* config_root);
  * @param filestore the struct to initialize
  * @returns true(1) on success
  */
-struct Filestore* libp2p_filestore_new();
+struct Filestore* libp2p_filestore_new(void);
 
 
 /***

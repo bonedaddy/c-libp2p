@@ -15,20 +15,20 @@ struct Libp2pVector* logger_classes = NULL;
 /**
  * Initialize the logger. This should be done only once.
  */
-void libp2p_logger_init() {
+void libp2p_logger_init(void) {
 	logger_classes = libp2p_utils_vector_new(1);
 }
 
 /***
  * Checks to see if the logger has been initialized
  */
-int libp2p_logger_initialized() {
+int libp2p_logger_initialized(void) {
 	if (logger_classes == NULL)
 		return 0;
 	return 1;
 }
 
-int libp2p_logger_free() {
+int libp2p_logger_free(void) {
 	if (logger_classes != NULL) {
 		for(int i = 0; i < logger_classes->total; i++) {
 			free((char*)libp2p_utils_vector_get(logger_classes, i));
@@ -68,7 +68,7 @@ int libp2p_logger_watching_class(const char* str) {
  * @param log_level the log level to convert
  * @returns "Error", "Debug", etc.
  */
-char* libp2p_logger_log_level_to_string(int log_level) {
+static char* libp2p_logger_log_level_to_string(int log_level) {
 	switch (log_level) {
 		case (LOGLEVEL_CRITICAL):
 			return "Critical";
@@ -116,7 +116,7 @@ void libp2p_logger_log(const char* area, int log_level, const char* format, ...)
  * @param format the logging string
  * @param ... params
  */
-void libp2p_logger_vlog(const char* area, int log_level, const char* format, va_list argptr) {
+static void libp2p_logger_vlog(const char* area, int log_level, const char* format, va_list argptr) {
 	if (!libp2p_logger_initialized())
 		libp2p_logger_init();
 	// only allow a message if the message log level is less than the current loglevel

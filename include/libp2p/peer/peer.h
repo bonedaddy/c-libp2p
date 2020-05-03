@@ -33,7 +33,7 @@ struct Libp2pPeer {
  * create a new Peer struct
  * @returns a struct or NULL if there was a problem
  */
-struct Libp2pPeer* libp2p_peer_new();
+struct Libp2pPeer* libp2p_peer_new(void);
 
 /**
  * Create a new Peer based on a multiaddress

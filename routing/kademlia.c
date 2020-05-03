@@ -372,7 +372,7 @@ void *kademlia_thread (void *ptr)
  * @param to the time out
  * @returns the time left
  */
-int search_kademlia_internal (unsigned char* id, int port, int to)
+static int search_kademlia_internal (unsigned char* id, int port, int to)
 {
     int i;
 

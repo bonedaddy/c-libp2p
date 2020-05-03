@@ -18,7 +18,7 @@ int libp2p_filestore_init(struct Filestore* datastore, const char* config_root) 
  * @param filestore the struct to initialize
  * @returns true(1) on success
  */
-struct Filestore* libp2p_filestore_new() {
+struct Filestore* libp2p_filestore_new(void) {
 	struct Filestore* f = malloc(sizeof(struct Filestore));
 	if (f == NULL)
 		return 0;

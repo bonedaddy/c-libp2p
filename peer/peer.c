@@ -15,7 +15,7 @@
  * create a new Peer struct
  * @returns a struct or NULL if there was a problem
  */
-struct Libp2pPeer* libp2p_peer_new() {
+struct Libp2pPeer* libp2p_peer_new(void) {
 	struct Libp2pPeer* out = (struct Libp2pPeer*)malloc(sizeof(struct Libp2pPeer));
 	if (out != NULL) {
 		out->id = NULL;
@@ -344,7 +344,7 @@ int libp2p_peer_compare(const struct Libp2pPeer* a, const struct Libp2pPeer* b) 
 	return 0;
 }
 
-struct Stream* libp2p_peer_get_connection_stream(struct Stream* incoming_stream) {
+static struct Stream* libp2p_peer_get_connection_stream(struct Stream* incoming_stream) {
 	struct Stream* current_stream = incoming_stream;
 	while (current_stream->parent_stream != NULL) {
 		current_stream = current_stream->parent_stream;

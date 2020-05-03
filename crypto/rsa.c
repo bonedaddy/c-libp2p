@@ -60,7 +60,7 @@ struct RsaPrivateKey* libp2p_crypto_private_key_to_rsa(struct PrivateKey* in) {
  * @param size the max size of the buffer. The actual size used is returned in this value
  * @returns true(1) on success, else 0
  */
-int libp2p_crypto_rsa_write_private_key_der( mbedtls_rsa_context *rsa, unsigned char *buf, size_t* size )
+static int libp2p_crypto_rsa_write_private_key_der( mbedtls_rsa_context *rsa, unsigned char *buf, size_t* size )
 {
     int ret;
     unsigned char *c = buf + *size;
@@ -91,7 +91,7 @@ int libp2p_crypto_rsa_write_private_key_der( mbedtls_rsa_context *rsa, unsigned 
  * @param size the max size of the buffer. The actual size used is returned in this value
  * @returns true(1) on success, else false(0)
  */
-int libp2p_crypto_rsa_write_public_key_der( mbedtls_pk_context *key, unsigned char *buf, size_t* size )
+static int libp2p_crypto_rsa_write_public_key_der( mbedtls_pk_context *key, unsigned char *buf, size_t* size )
 {
     int ret;
     unsigned char *c;
@@ -148,7 +148,7 @@ int libp2p_crypto_rsa_generate_keypair(struct RsaPrivateKey* private_key, unsign
 	int exponent = 65537;
 	int retVal = 0;
 	
-	unsigned char* buffer;
+	unsigned char* buffer = NULL;
 
 	const char *pers = "rsa_genkey";
 	
@@ -250,7 +250,7 @@ int libp2p_crypto_rsa_private_key_fill_public_key(struct RsaPrivateKey* private_
 	return 1;
 }
 
-struct RsaPrivateKey* libp2p_crypto_rsa_rsa_private_key_new() {
+struct RsaPrivateKey* libp2p_crypto_rsa_rsa_private_key_new(void) {
 	struct RsaPrivateKey* out = (struct RsaPrivateKey*)malloc(sizeof(struct RsaPrivateKey));
 	if (out != NULL) {
 		out->D = 0;
@@ -297,11 +297,15 @@ int libp2p_crypto_rsa_sign(struct RsaPrivateKey* private_key, const char* messag
 	unsigned char hash[32] = {0};
 	int retVal = 0;
 	char* pers = "libp2p crypto rsa sign";
-	mbedtls_pk_context private_context = {0};
-	mbedtls_entropy_context entropy = {0};
-	mbedtls_ctr_drbg_context ctr_drbg = {0};
+	mbedtls_pk_context private_context;
+	mbedtls_entropy_context entropy;
+	mbedtls_ctr_drbg_context ctr_drbg;
 	unsigned char* der = NULL;
 	int der_allocated = 0;
+
+	memset(&private_context, 0, sizeof(mbedtls_pk_context));
+    memset(&entropy, 0, sizeof(mbedtls_entropy_context));
+    memset(&ctr_drbg, 0, sizeof(mbedtls_ctr_drbg_context));
 
 	// hash the incoming message
 	libp2p_crypto_hashing_sha256((unsigned char*)message, message_length, hash);

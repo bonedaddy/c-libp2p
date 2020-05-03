@@ -15,7 +15,7 @@
  * This is where kademlia and dht talk to the outside world
  */
 
-int libp2p_routing_dht_can_handle(const struct StreamMessage* msg) {
+static int libp2p_routing_dht_can_handle(const struct StreamMessage* msg) {
 	if (msg == NULL || msg->data_size == 0 || msg->data == NULL)
 		return 0;
 	if (msg->data_size < 8)
@@ -26,12 +26,12 @@ int libp2p_routing_dht_can_handle(const struct StreamMessage* msg) {
 	return 0;
 }
 
-int libp2p_routing_dht_shutdown(void* context) {
+static int libp2p_routing_dht_shutdown(void* context) {
 	free(context);
 	return 1;
 }
 
-int libp2p_routing_dht_handle_msg(const struct StreamMessage* msg, struct Stream* stream, void* protocol_context) {
+static int libp2p_routing_dht_handle_msg(const struct StreamMessage* msg, struct Stream* stream, void* protocol_context) {
 	struct DhtContext* ctx = (struct DhtContext*)protocol_context;
 	if (!libp2p_routing_dht_handshake(stream))
 		return -1;
@@ -62,7 +62,7 @@ struct Libp2pProtocolHandler* libp2p_routing_dht_build_protocol_handler(struct P
  * @param buffer_size the size of the results
  * @returns true(1) on success, false(0) otherwise
  */
-int libp2p_routing_dht_protobuf_message(struct KademliaMessage* message, unsigned char** buffer, size_t *buffer_size) {
+static int libp2p_routing_dht_protobuf_message(struct KademliaMessage* message, unsigned char** buffer, size_t *buffer_size) {
 	*buffer_size = libp2p_message_protobuf_encode_size(message);
 	*buffer = malloc(*buffer_size);
 	if (!libp2p_message_protobuf_encode(message, *buffer, *buffer_size, buffer_size)) {
@@ -128,7 +128,7 @@ int libp2p_routing_dht_handshake(struct Stream* stream) {
  * @param buffer_size the length of the results
  * @returns true(1) on success, false(0) otherwise
  */
-int libp2p_routing_dht_handle_ping(struct KademliaMessage* message, unsigned char** buffer, size_t *buffer_size) {
+static int libp2p_routing_dht_handle_ping(struct KademliaMessage* message, unsigned char** buffer, size_t *buffer_size) {
 	// just turn message back into a protobuf and send it back...
 	return libp2p_routing_dht_protobuf_message(message, buffer, buffer_size);
 }
@@ -142,7 +142,7 @@ int libp2p_routing_dht_handle_ping(struct KademliaMessage* message, unsigned cha
  * @param results_size the size of the results
  * @returns true(1) on success, false(0) otherwise
  */
-int libp2p_routing_dht_handle_get_providers(struct Stream* stream, struct KademliaMessage* message, struct DhtContext* protocol_context,
+static int libp2p_routing_dht_handle_get_providers(struct Stream* stream, struct KademliaMessage* message, struct DhtContext* protocol_context,
 		unsigned char** results, size_t* results_size) {
 	unsigned char* peer_id = NULL;
 	int peer_id_size = 0;
@@ -215,7 +215,7 @@ int libp2p_routing_dht_handle_get_providers(struct Stream* stream, struct Kademl
  * @param head linked list of multiaddresses
  * @returns the IP multiaddress in the list, or NULL if none found
  */
-struct MultiAddress* libp2p_routing_dht_find_peer_ip_multiaddress(struct Libp2pLinkedList* head) {
+static struct MultiAddress* libp2p_routing_dht_find_peer_ip_multiaddress(struct Libp2pLinkedList* head) {
 	struct MultiAddress* out = NULL;
 	struct Libp2pLinkedList* current = head;
 	while (current != NULL) {
@@ -240,7 +240,7 @@ struct MultiAddress* libp2p_routing_dht_find_peer_ip_multiaddress(struct Libp2pL
  * @param result_buffer_size the size of the result buffer
  * @returns true(1) on success, otherwise false(0)
  */
-int libp2p_routing_dht_handle_add_provider(struct Stream* stream, struct KademliaMessage* message,
+static int libp2p_routing_dht_handle_add_provider(struct Stream* stream, struct KademliaMessage* message,
 			struct DhtContext* protocol_context, unsigned char** result_buffer, size_t* result_buffer_size) {
 	int retVal = 0;
 	struct Libp2pPeer *peer = NULL;
@@ -331,7 +331,7 @@ int libp2p_routing_dht_handle_add_provider(struct Stream* stream, struct Kademli
  * @param result_buffer_size the size of the results
  * @returns true(1) on success, otherwise false(0)
  */
-int libp2p_routing_dht_handle_get_value(struct Stream* stream, struct KademliaMessage* message, struct DhtContext* dht_context,
+static int libp2p_routing_dht_handle_get_value(struct Stream* stream, struct KademliaMessage* message, struct DhtContext* dht_context,
 		unsigned char** result_buffer, size_t *result_buffer_size) {
 
 	struct Filestore* filestore = dht_context->filestore;
@@ -379,7 +379,7 @@ int libp2p_routing_dht_handle_get_value(struct Stream* stream, struct KademliaMe
  * @param datastore the datastore
  * @returns true(1) on success, otherwise false(0)
  */
-int libp2p_routing_dht_handle_put_value(struct Stream* stream, struct KademliaMessage* message,
+static int libp2p_routing_dht_handle_put_value(struct Stream* stream, struct KademliaMessage* message,
 		struct DhtContext* protocol_context) {
 
 	if (message->record == NULL)
@@ -421,7 +421,7 @@ int libp2p_routing_dht_handle_put_value(struct Stream* stream, struct KademliaMe
  * @param result_buffer_size the size of the results
  * @returns true(1) on success, otherwise false(0)
  */
-int libp2p_routing_dht_handle_find_node(struct Stream* stream, struct KademliaMessage* message,
+static int libp2p_routing_dht_handle_find_node(struct Stream* stream, struct KademliaMessage* message,
 		struct DhtContext* protocol_context, unsigned char** result_buffer, size_t *result_buffer_size) {
 	// look through peer store
 	struct Libp2pPeer* peer = libp2p_peerstore_get_peer(protocol_context->peer_store, (unsigned char*)message->key, message->key_size);

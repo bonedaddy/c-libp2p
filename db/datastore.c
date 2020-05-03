@@ -4,7 +4,7 @@
 #include "libp2p/db/datastore.h"
 #include "libp2p/os/utils.h"
 
-int alloc_and_assign(char** result, const char* string) {
+static int alloc_and_assign(char** result, const char* string) {
 	*result = malloc(strlen(string)+1);
 	if (*result == NULL)
 		return 0;
@@ -74,7 +74,7 @@ int libp2p_datastore_free(struct Datastore* datastore) {
 	return 1;
 }
 
-struct DatastoreRecord* libp2p_datastore_record_new() {
+struct DatastoreRecord* libp2p_datastore_record_new(void) {
 	struct DatastoreRecord* rec = (struct DatastoreRecord*) malloc(sizeof(struct DatastoreRecord));
 	if (rec != NULL) {
 		rec->key = NULL;

@@ -16,7 +16,7 @@ struct Propose {
 	size_t hashes_size;
 };
 
-struct Propose* libp2p_secio_propose_new();
+struct Propose* libp2p_secio_propose_new(void);
 void libp2p_secio_propose_free(struct Propose* in);
 /**
  * Helper to set the property to a value

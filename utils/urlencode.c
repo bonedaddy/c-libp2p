@@ -2,7 +2,7 @@
 #include <string.h>
 #include <ctype.h>
 
-char *libp2p_utils_url_encode(char *src)
+static char *libp2p_utils_url_encode(char *src)
 {
 	const char *hex = "0123456789abcdef";
 	char *p, *dst = malloc (strlen(src) * 3);
@@ -22,7 +22,7 @@ char *libp2p_utils_url_encode(char *src)
 	return realloc(dst, (size_t) (p - dst));
 }
 
-int h2b(int c)
+static int h2b(int c)
 {
 	if (c >= '0' && c <= '9') {
 		return c - '0';
@@ -34,7 +34,7 @@ int h2b(int c)
  	return 0; // ?
 }
 
-char *libp2p_utils_url_decode(char *src)
+static char *libp2p_utils_url_decode(char *src)
 {
 	char *p, *dst = malloc (strlen(src) + 1);
 

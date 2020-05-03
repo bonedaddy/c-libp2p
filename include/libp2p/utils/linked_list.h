@@ -9,7 +9,7 @@ struct Libp2pLinkedList {
  * Create a new linked list struct
  * @returns a new linked list struct
  */
-struct Libp2pLinkedList* libp2p_utils_linked_list_new();
+struct Libp2pLinkedList* libp2p_utils_linked_list_new(void);
 
 /**
  * Free resources from a linked list

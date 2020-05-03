@@ -53,7 +53,7 @@ struct SessionContext* libp2p_net_connection_get_session_context(struct Stream* 
  * @param stream_context the ConnectionContext
  * @returns true(1) on success, false(0) otherwise
  */
-int libp2p_net_connection_close(void* stream_context);
+int libp2p_net_connection_close(struct Stream*);
 
 /***
  * Check and see if there is anything waiting on this network connection

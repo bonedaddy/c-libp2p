@@ -35,7 +35,7 @@ const char* SupportedExchanges = "P-256,P-384,P-521";
 const char* SupportedCiphers = "AES-256,AES-128,Blowfish";
 const char* SupportedHashes = "SHA256,SHA512";
 
-int libp2p_secio_can_handle(const struct StreamMessage* msg) {
+static int libp2p_secio_can_handle(const struct StreamMessage* msg) {
 	if (msg == NULL || msg->data_size == 0 || msg->data == NULL)
 		return 0;
 	const char* protocol = "/secio/1.0.0";
@@ -60,7 +60,7 @@ int libp2p_secio_can_handle(const struct StreamMessage* msg) {
  * @param protocol_context a SecioContext that contains the needed information
  * @returns <0 on error, 0 if okay (does not allow daemon to continue looping)
  */
-int libp2p_secio_handle_message(const struct StreamMessage* msg, struct Stream* stream, void* protocol_context) {
+static int libp2p_secio_handle_message(const struct StreamMessage* msg, struct Stream* stream, void* protocol_context) {
 	libp2p_logger_debug("secio", "Handling incoming secio message.\n");
 	struct SecioContext* ctx = (struct SecioContext*)protocol_context;
 	struct Stream* secio_stream = NULL;
@@ -83,7 +83,7 @@ int libp2p_secio_handle_message(const struct StreamMessage* msg, struct Stream* 
 	return -1;
 }
 
-int libp2p_secio_shutdown(void* context) {
+static int libp2p_secio_shutdown(void* context) {
 	free(context);
 	return 1;
 }
@@ -113,7 +113,7 @@ struct Libp2pProtocolHandler* libp2p_secio_build_protocol_handler(struct RsaPriv
  * @param length the length of the nonce
  * @returns true(1) on success, otherwise false(0)
  */
-int libp2p_secio_generate_nonce(unsigned char* results, int length) {
+static int libp2p_secio_generate_nonce(unsigned char* results, int length) {
 	FILE* fd = fopen("/dev/urandom", "r");
 	fread(results, 1, length, fd);
 	fclose(fd);
@@ -126,7 +126,7 @@ int libp2p_secio_generate_nonce(unsigned char* results, int length) {
  * @param incoming_size the size of the byte array
  * @returns the string
  */
-char* secio_to_hex(unsigned char* incoming, size_t incoming_size) {
+static char* secio_to_hex(unsigned char* incoming, size_t incoming_size) {
 	static char str[3000];
 	memset(str, 0, 3000);
 	for(int i = 0; i < incoming_size; i++) {
@@ -141,7 +141,7 @@ char* secio_to_hex(unsigned char* incoming, size_t incoming_size) {
  * @param result where to put the result (should be char[32])
  * @returns true(1) on success
  */
-int libp2p_secio_hash(unsigned char* key, size_t key_size, unsigned char* nonce, size_t nonce_size, unsigned char result[32]) {
+static int libp2p_secio_hash(unsigned char* key, size_t key_size, unsigned char* nonce, size_t nonce_size, unsigned char result[32]) {
 	// append public key and nonce
 	unsigned char* appended = malloc(key_size + nonce_size);
 	memcpy(appended, key, key_size);
@@ -159,7 +159,7 @@ int libp2p_secio_hash(unsigned char* key, size_t key_size, unsigned char* nonce,
  * @param length the length of a and b
  * @returns a -1, 0, or 1
  */
-int libp2p_secio_bytes_compare(const unsigned char* a, const unsigned char* b, int length) {
+static int libp2p_secio_bytes_compare(const unsigned char* a, const unsigned char* b, int length) {
 	for(int i = 0; i < length; i++) {
 		if (b[i] > a[i])
 			return -1;
@@ -193,7 +193,7 @@ int libp2p_secio_log_keys(struct SessionContext* session) {
  * @param local the struct from this side
  * @returns -1 or 1 that will be used to determine who is first
  */
-int libp2p_secio_determine_order(struct Propose* remote, struct Propose* local) {
+static int libp2p_secio_determine_order(struct Propose* remote, struct Propose* local) {
 	unsigned char hash1[32];
 	unsigned char hash2[32];
 	libp2p_secio_hash(remote->public_key, remote->public_key_size, local->rand, local->rand_size, hash1);
@@ -202,13 +202,13 @@ int libp2p_secio_determine_order(struct Propose* remote, struct Propose* local) 
 	return libp2p_secio_bytes_compare(hash1, hash2, 32);
 }
 
-int libp2p_secio_string_allocate(char* in, char** out) {
+static int libp2p_secio_string_allocate(char* in, char** out) {
 	*out = (char*)malloc(strlen(in) + 1);
 	strcpy(*out, in);
 	return 1;
 }
 
-struct StringList* libp2p_secio_split_list(const char* list, int list_size) {
+static struct StringList* libp2p_secio_split_list(const char* list, int list_size) {
 	struct StringList* head = NULL;
 	struct StringList* last = NULL;
 	struct StringList* current = NULL;
@@ -245,7 +245,7 @@ struct StringList* libp2p_secio_split_list(const char* list, int list_size) {
  * @param results where to put the results (NOTE: Allocate memory for this)
  * @returns true(1) on success, otherwise, false(0)
  */
-int libp2p_secio_select_best(int order, const char* local_list, int local_list_size, const char* remote_list, int remote_list_size, char** results) {
+static int libp2p_secio_select_best(int order, const char* local_list, int local_list_size, const char* remote_list, int remote_list_size, char** results) {
 	struct StringList* lead_head = libp2p_secio_split_list(local_list, local_list_size);
 	struct StringList* follower_head = NULL;
 	struct StringList* lead = NULL;
@@ -301,7 +301,7 @@ int libp2p_secio_select_best(int order, const char* local_list, int local_list_s
  * @param signature the signature that was given to us
  * @returns true(1) if the signature is correct, false(0) otherwise
  */
-int libp2p_secio_verify_signature(struct PublicKey* public_key, const unsigned char* in, size_t in_length, unsigned char* signature) {
+static int libp2p_secio_verify_signature(struct PublicKey* public_key, const unsigned char* in, size_t in_length, unsigned char* signature) {
 
 	// debugging:
 	if (libp2p_logger_watching_class("secio")) {
@@ -364,7 +364,7 @@ int libp2p_secio_sign(struct PrivateKey* private_key, const char* in, size_t in_
  * @param k2 one of the resultant keys
  * @returns true(1) on success, otherwise 0 (false)
  */
-int libp2p_secio_stretch_keys(char* cipherType, char* hashType, unsigned char* secret, size_t secret_size,
+static int libp2p_secio_stretch_keys(char* cipherType, char* hashType, unsigned char* secret, size_t secret_size,
 		struct StretchedKey** k1_ptr, struct StretchedKey** k2_ptr) {
 	int retVal = 0, num_filled = 0, hmac_size = 20;
 	struct StretchedKey* k1 = NULL;
@@ -502,7 +502,7 @@ int libp2p_secio_stretch_keys(char* cipherType, char* hashType, unsigned char* s
 	return retVal;
 }
 
-int libp2p_secio_make_mac_and_cipher(struct SessionContext* session, struct StretchedKey* stretched_key) {
+static int libp2p_secio_make_mac_and_cipher(struct SessionContext* session, struct StretchedKey* stretched_key) {
 	// mac
 	if (strcmp(session->chosen_hash, "SHA1") == 0) {
 		stretched_key->mac_size = 40;
@@ -578,7 +578,7 @@ int libp2p_secio_receive_protocol(struct Stream* stream) {
  * @param stream the stream
  * @returns the raw socket descriptor
  */
-int libp2p_secio_get_socket_descriptor(struct Stream* stream) {
+static int libp2p_secio_get_socket_descriptor(struct Stream* stream) {
 	struct Stream* current = stream;
 	while (current->parent_stream != NULL)
 		current = current->parent_stream;
@@ -592,7 +592,7 @@ int libp2p_secio_get_socket_descriptor(struct Stream* stream) {
  * @param stream the stream
  * @returns true(1)
  */
-int libp2p_secio_set_socket_descriptor(struct Stream* stream) {
+static int libp2p_secio_set_socket_descriptor(struct Stream* stream) {
 	struct Stream* current = stream;
 	while (current->parent_stream != NULL)
 		current = current->parent_stream;
@@ -608,7 +608,7 @@ int libp2p_secio_set_socket_descriptor(struct Stream* stream) {
  * @param data_length the number of bytes to write
  * @returns the number of bytes written
  */
-int libp2p_secio_unencrypted_write(struct Stream* secio_stream, struct StreamMessage* msg) {
+static int libp2p_secio_unencrypted_write(struct Stream* secio_stream, struct StreamMessage* msg) {
 	int num_bytes = 0;
 
 	int socket_descriptor = libp2p_secio_get_socket_descriptor(secio_stream);
@@ -661,7 +661,7 @@ int libp2p_secio_unencrypted_write(struct Stream* secio_stream, struct StreamMes
  * @param results_size the size of the results
  * @returns the number of bytes read
  */
-int libp2p_secio_unencrypted_read(struct Stream* secio_stream, struct StreamMessage** msg, int timeout_secs) {
+static int libp2p_secio_unencrypted_read(struct Stream* secio_stream, struct StreamMessage** msg, int timeout_secs) {
 	uint32_t buffer_size = 0;
 
 	if (secio_stream == NULL) {
@@ -767,7 +767,7 @@ int libp2p_secio_unencrypted_read(struct Stream* secio_stream, struct StreamMess
  * @param session the SessionContext struct that contains the variables to initialize
  * @returns 1
  */
-int libp2p_secio_initialize_crypto(struct SessionContext* session) {
+static int libp2p_secio_initialize_crypto(struct SessionContext* session) {
 	session->aes_decode_nonce_offset = 0;
 	session->aes_encode_nonce_offset = 0;
 	memset(session->aes_decode_stream_block, 0, 16);
@@ -784,7 +784,7 @@ int libp2p_secio_initialize_crypto(struct SessionContext* session) {
  * @param outgoing_size the amount of memory allocated
  * @returns true(1) on success, otherwise false(0)
  */
-int libp2p_secio_encrypt(struct SessionContext* session, const unsigned char* incoming, size_t incoming_size, unsigned char** outgoing, size_t* outgoing_size) {
+static int libp2p_secio_encrypt(struct SessionContext* session, const unsigned char* incoming, size_t incoming_size, unsigned char** outgoing, size_t* outgoing_size) {
 	unsigned char* buffer = NULL;
 	size_t buffer_size = 0, original_buffer_size = 0;
 
@@ -837,7 +837,7 @@ int libp2p_secio_encrypt(struct SessionContext* session, const unsigned char* in
  * @param bytes the bytes to write
  * @returns the number of bytes written
  */
-int libp2p_secio_encrypted_write(void* stream_context, struct StreamMessage* bytes) {
+static int libp2p_secio_encrypted_write(void* stream_context, struct StreamMessage* bytes) {
 	struct SecioContext* ctx = (struct SecioContext*) stream_context;
 	struct Stream* parent_stream = ctx->stream->parent_stream;
 
@@ -872,7 +872,7 @@ int libp2p_secio_encrypted_write(void* stream_context, struct StreamMessage* byt
  * @param outgoing_size the amount of memory allocated for the results
  * @returns number of unencrypted bytes
  */
-int libp2p_secio_decrypt(struct SessionContext* session, const unsigned char* incoming, size_t incoming_size, struct StreamMessage** outgoing) {
+static int libp2p_secio_decrypt(struct SessionContext* session, const unsigned char* incoming, size_t incoming_size, struct StreamMessage** outgoing) {
 	size_t data_section_size = incoming_size - 32;
 	unsigned char* buffer;
 
@@ -938,7 +938,7 @@ int libp2p_secio_decrypt(struct SessionContext* session, const unsigned char* in
  * @param bytes where the bytes will be stored
  * @returns the number of bytes read
  */
-int libp2p_secio_encrypted_read(void* stream_context, struct StreamMessage** bytes, int timeout_secs) {
+static int libp2p_secio_encrypted_read(void* stream_context, struct StreamMessage** bytes, int timeout_secs) {
 	int retVal = 0;
 	struct SecioContext* ctx = (struct SecioContext*)stream_context;
 	struct Stream* parent_stream = ctx->stream->parent_stream;
@@ -961,7 +961,7 @@ int libp2p_secio_encrypted_read(void* stream_context, struct StreamMessage** byt
 	return retVal;
 }
 
-struct Libp2pPeer* libp2p_secio_get_peer_or_add(struct Peerstore* peerstore, struct SessionContext* local_session) {
+static struct Libp2pPeer* libp2p_secio_get_peer_or_add(struct Peerstore* peerstore, struct SessionContext* local_session) {
 	struct Libp2pPeer* remote_peer = NULL;
 
 	// see if we already have this peer
@@ -1366,7 +1366,7 @@ int libp2p_secio_handshake(struct Stream* secio_stream) {
 	return retVal;
 }
 
-int libp2p_secio_peek(void* stream_context) {
+static int libp2p_secio_peek(void* stream_context) {
 	if (stream_context == NULL) {
 		return -1;
 	}
@@ -1382,7 +1382,7 @@ int libp2p_secio_peek(void* stream_context) {
  * @param timeout_secs the network timeout
  * @returns the number of bytes read.
  */
-int libp2p_secio_read_raw(void* stream_context, uint8_t* buffer, int buffer_size, int timeout_secs) {
+static int libp2p_secio_read_raw(void* stream_context, uint8_t* buffer, int buffer_size, int timeout_secs) {
 	if (stream_context == NULL) {
 		return -1;
 	}
@@ -1410,7 +1410,7 @@ int libp2p_secio_read_raw(void* stream_context, uint8_t* buffer, int buffer_size
 	return max_to_read;
 }
 
-int libp2p_secio_close(struct Stream* stream) {
+static int libp2p_secio_close(struct Stream* stream) {
 	if (stream != NULL && stream->stream_context != NULL)
 		free(stream->stream_context);
 	return 1;

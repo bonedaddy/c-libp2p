@@ -21,7 +21,7 @@ struct ThreadsafeBufferContext {
  * Allocate a new context
  * @returns a newly allocated context, or NULL on error (out of memory?)
  */
-struct ThreadsafeBufferContext* threadsafe_buffer_context_new();
+struct ThreadsafeBufferContext* threadsafe_buffer_context_new(void);
 
 /***
  * Free resources of a buffer context

@@ -28,7 +28,7 @@ int DEFAULT_NETWORK_TIMEOUT = 5;
  * @param protocol_handlers a vector of protocol handlers
  * @returns <0 on error, 0 if we shouldn't handle this anymore, or 1 on success
  */
-int libp2p_swarm_listen_and_handle(struct Stream* stream, struct Libp2pVector* protocol_handlers) {
+static int libp2p_swarm_listen_and_handle(struct Stream* stream, struct Libp2pVector* protocol_handlers) {
 	struct StreamMessage* results = NULL;
 	int retVal = 0;
 	if (stream == NULL)
@@ -64,7 +64,7 @@ int libp2p_swarm_listen_and_handle(struct Stream* stream, struct Libp2pVector* p
  * This is on its own thread, and listens for incoming data from a particular client
  * @param session the SessionContext
  */
-void libp2p_swarm_listen(void* ctx) {
+static void libp2p_swarm_listen(void* ctx) {
 	struct SwarmSession* swarm_session = (struct SwarmSession*) ctx;
 	struct SessionContext* session_context = swarm_session->session_context;
 	int retVal = 0;

@@ -9,7 +9,7 @@
 enum WireType secio_exchange_message_fields[] = { WIRETYPE_LENGTH_DELIMITED, WIRETYPE_LENGTH_DELIMITED };
 
 
-struct Exchange* libp2p_secio_exchange_new() {
+struct Exchange* libp2p_secio_exchange_new(void) {
 	struct Exchange* out = (struct Exchange*)malloc(sizeof(struct Exchange));
 	if (out != NULL) {
 		out->epubkey = NULL;
@@ -109,11 +109,6 @@ exit:
 
 	return retVal;
 }
-
-/***
- * Forward declaration
- */
-int libp2p_secio_sign(struct PrivateKey* priv, const char* bytes_to_send, size_t bytes_size, uint8_t** signature, size_t* signature_size);
 
 /***
  * Build an exchange object based on passed in values

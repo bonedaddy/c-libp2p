@@ -25,7 +25,7 @@ struct Libp2pRecord {
  * Create a record with default settings
  * @returns the newly allocated record struct
  */
-struct Libp2pRecord* libp2p_record_new();
+struct Libp2pRecord* libp2p_record_new(void);
 
 /**
  * Free the resources from a record struct

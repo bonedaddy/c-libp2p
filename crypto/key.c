@@ -10,7 +10,7 @@
  * Utilities for public and private keys
  */
 
-struct PublicKey* libp2p_crypto_public_key_new() {
+struct PublicKey* libp2p_crypto_public_key_new(void) {
 	struct PublicKey* retVal = malloc(sizeof(struct PublicKey));
 	if (retVal == NULL)
 		return NULL;
@@ -111,7 +111,7 @@ exit:
 	return retVal;
 }
 
-struct PrivateKey* libp2p_crypto_private_key_new() {
+struct PrivateKey* libp2p_crypto_private_key_new(void) {
 	struct PrivateKey* retVal = malloc(sizeof(struct PrivateKey));
 	if (retVal == NULL)
 		return NULL;

@@ -20,10 +20,10 @@ struct PrivateKey {
 	size_t data_size;
 };
 
-struct PublicKey* libp2p_crypto_public_key_new();
+struct PublicKey* libp2p_crypto_public_key_new(void);
 void libp2p_crypto_public_key_free(struct PublicKey* in);
 
-struct PrivateKey* libp2p_crypto_private_key_new();
+struct PrivateKey* libp2p_crypto_private_key_new(void);
 void libp2p_crypto_private_key_free(struct PrivateKey* in);
 int libp2p_crypto_private_key_copy(const struct PrivateKey* source, struct PrivateKey* destination);
 
