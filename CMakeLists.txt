@@ -6,11 +6,13 @@ enable_language(C ASM)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
-set(CMAKE_C_FLAGS "-std=gnu11 -O0 -g -Wall -Wmissing-prototypes -Wno-unused-result -Wno-unused-function -Wno-unused-variable")
+set(CMAKE_C_FLAGS "-std=gnu11")
 #set gnu compiler c flags
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-        set(CMAKE_C_FLAGS "-std=gnu11 -O0 -g -Wall -Wmissing-prototypes -Wno-unused-result -Wno-unused-function -Wno-unused-variable -Wno-unused-but-set-variable")
+        set(CMAKE_C_FLAGS "-std=gnu11")
 endif()
+#  -O0 -g -Wall -Wmissing-prototypes -Wno-unused-result -Wno-unused-function -Wno-unused-variable
+#  -O0 -g -Wall -Wmissing-prototypes -Wno-unused-result -Wno-unused-function -Wno-unused-variable -Wno-unused-but-set-variable
 
 OPTION(DEBUG "Build the project using debugging code" OFF)
 OPTION(BUILD_TEST "Build Test Cases" OFF)
@@ -26,7 +28,8 @@ endif(DEBUG)
 #[1]end
 
 #[2]download and compile external project start
-set(PROTOBUF_LIBRARY ${CMAKE_SOURCE_DIR}/c-protobuf)
+include(cmake/c-protobuf-compile.cmake)
+define_c_protobuf()
 include(cmake/c-multiaddr.cmake)
 include(cmake/c-multihash.cmake)
 include(cmake/c-protobuf.cmake)
@@ -113,7 +116,8 @@ target_link_libraries(
         ${CMAKE_THREAD_LIBS_INIT}
         ${MULTIADDR_LIBRARY}
         ${MULTIHASH_LIBRARY}
-        ${PROTOBUF_LIBRARY}
+        # ${PROTOBUF_LIBRARY}
+        libprotobuf
         m # math library
 )
 

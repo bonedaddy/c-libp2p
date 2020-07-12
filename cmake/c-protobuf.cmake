@@ -1,3 +1,5 @@
+set(PROTOBUF_LIBRARY ${CMAKE_SOURCE_DIR}/c-protobuf)
+
 find_path(PROTOBUF_ROOT_DIR
         NAMES protobuf.h
         PATHS c-protobuf
@@ -40,3 +42,6 @@ mark_as_advanced(
 
 set(CMAKE_REQUIRED_INCLUDES ${PROTOBUF_INCLUDE_DIR})
 set(CMAKE_REQUIRED_LIBRARIES ${PROTOBUF_LIBRARY})
+
+set(PROTOBUF_LIBRARY ${CMAKE_SOURCE_DIR}/c-protobuf/libprotobuf.a)
+set(PROTOBUF_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/c-protobuf)
