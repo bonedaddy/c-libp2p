@@ -26,9 +26,11 @@ endif(DEBUG)
 #[1]end
 
 #[2]download and compile external project start
+set(PROTOBUF_LIBRARY ${CMAKE_SOURCE_DIR}/c-protobuf)
 include(cmake/c-multiaddr.cmake)
 include(cmake/c-multihash.cmake)
 include(cmake/c-protobuf.cmake)
+
 #[2]end
 
 #[3]download and compile projects in hunter
