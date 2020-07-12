@@ -2,34 +2,31 @@ cmake_minimum_required(VERSION 3.15)
 project(libp2p C CXX)
 enable_language(C ASM)
 
-#[1]set c/c++ standard and compile flags & definitions
-set(CMAKE_C_STANDARD 11)
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_C_STANDARD_REQUIRED ON)
-set(CMAKE_C_FLAGS "-std=gnu11")
-#set gnu compiler c flags
-if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-        set(CMAKE_C_FLAGS "-std=gnu11")
+# handle debug build type
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    # -g indicates to include debug symbols
+    # TODO(bonedaddy): add back [-Wall -Wextra -Werror -pedantic]
+    list(APPEND flags -std=c17  -g)
 endif()
-#  -O0 -g -Wall -Wmissing-prototypes -Wno-unused-result -Wno-unused-function -Wno-unused-variable
-#  -O0 -g -Wall -Wmissing-prototypes -Wno-unused-result -Wno-unused-function -Wno-unused-variable -Wno-unused-but-set-variable
 
+# handle no build type
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE "Release")
+    # disable debug stuff, useful for disabling asserts
+    add_definitions(-DNDEBUG)
+    # TODO(bonedaddy): add back [-Wall -Wextra -Werror -pedantic]
+    list(APPEND flags -std=c17)
+endif()
+
+# set options
 OPTION(DEBUG "Build the project using debugging code" OFF)
 OPTION(BUILD_TEST "Build Test Cases" OFF)
 OPTION(RUN_TEST "Run Test Cases" OFF)
 
-if(DEBUG)
-        MESSAGE("Adding Debug flag...")
-        SET(CMAKE_BUILD_TYPE Debug)
-        MESSAGE("Build type is " ${CMAKE_BUILD_TYPE})
-else()
-        add_definitions(-DNDEBUG)
-endif(DEBUG)
 #[1]end
 
 #[2]download and compile external project start
-include(cmake/c-protobuf-compile.cmake)
-define_c_protobuf()
+# TODO(bonedaddy): refactor
 include(cmake/c-multiaddr.cmake)
 include(cmake/c-multihash.cmake)
 include(cmake/c-protobuf.cmake)
@@ -102,6 +99,7 @@ list(FILTER LIBP2P_SOURCES EXCLUDE REGEX ".testit.c$")
 
 #[8]compile executable object start
 add_executable(libp2p-demo main.c ${LIBP2P_SOURCES})
+target_compile_options(libp2p-demo PRIVATE ${flags})
 #add_library(p2p_static STATIC ${LIBP2P_SOURCES})
 #add_library(p2p SHARED ${LIBP2P_SOURCES})
 #
