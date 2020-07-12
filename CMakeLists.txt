@@ -114,6 +114,7 @@ target_link_libraries(
         ${MULTIADDR_LIBRARY}
         ${MULTIHASH_LIBRARY}
         ${PROTOBUF_LIBRARY}
+        m # math library
 )
 
 #target_link_libraries(
