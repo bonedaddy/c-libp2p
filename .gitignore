@@ -10,3 +10,5 @@
 test/testit_libp2p
 cscope.files
 cscope.out
+
+build/
